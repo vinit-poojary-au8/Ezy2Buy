@@ -11,7 +11,10 @@ const Product = ({ product }) => {
 					src={product.image}
 					variant='top'
 					className='img-fluid'
-					style={{ height: '200px' }}
+					style={{
+						height: '200px',
+						objectFit: 'scale-down',
+					}}
 				/>
 			</Link>
 
