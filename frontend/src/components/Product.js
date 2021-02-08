@@ -7,13 +7,12 @@ const Product = ({ product }) => {
 	return (
 		<Card className='my-3 p-3 rounded'>
 			<Link to={`/product/${product._id}`}>
-        <center>
 				<Card.Img
 					src={product.image}
 					variant='top'
-					style={{ width: '170px', height: '255px' }}
+					className='img-fluid'
+					style={{ height: '200px' }}
 				/>
-        </center>
 			</Link>
 
 			<Card.Body>
