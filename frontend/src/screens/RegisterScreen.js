@@ -6,13 +6,15 @@ import Message from '../components/Message'
 import Loader from '../components/Loader'
 import FormContainer from '../components/FormContainer'
 import { register } from '../actions/userActions'
+import axios from 'axios';
 
 const RegisterScreen = ({ location, history }) => {
 	const [name, setName] = useState('')
 	const [email, setEmail] = useState('')
 	const [password, setPassword] = useState('')
 	const [confirmPassword, setConfirmPassword] = useState('')
-	const [otp, setOtp] = useState('')
+	const [verifyOtp, setOtp] = useState('')
+	const [isOtpVerified, setVerifiedOtp] = useState(false)
 	const [message, setMessage] = useState(null)
 
 	const dispatch = useDispatch()
@@ -35,6 +37,13 @@ const RegisterScreen = ({ location, history }) => {
 		} else {
 			dispatch(register(name, email, password))
 		}
+	}
+	const sendOtp =e =>{
+		if(email != null){
+		axios.post('/api/users/sendOtp',email).then(()=>{console.log('Otp sent')}).catch(err=>{console.log(err)})}
+	}
+	const verifyOtps =e=>{
+		axios.post('/api/users/verifyOtp',verifyOtp).then((res)=>{console.log('Otp sent '+res)}).catch(err=>{console.log(err)})}
 	}
 
 	return (
@@ -94,23 +103,27 @@ const RegisterScreen = ({ location, history }) => {
 					></Form.Control>
 				</Form.Group>
 				{/* otp */}
-				{/* <Form.Group controlId='confirmOTP'>
-          <Form.Label>Otp</Form.Label>
-          <Form.Control
-            type='password'
-            placeholder='****'
-            pattern='[0-9]{4}'
-            value={otp}
-            onChange={(e) => setOtp(e.target.value)}
-          >
-            <InputGroup.Append>
-      <Button variant="info">Send</Button>
-      <Button variant="info">Verify</Button>
-    </InputGroup.Append>
-          </Form.Control>
-        </Form.Group> */}
+				<Form.Group controlId='confirmOTP'>
+					<Form.Label>Otp</Form.Label>
+					<Form.Control
+						type='password'
+						placeholder='****'
+						pattern='[0-9]{4}'
+						value={verifyOtp}
+						onChange={(e) => setOtp(e.target.value)}
+					>
+						<InputGroup.Append>
+							<Button variant='info' onClick={()=>sendOtp}>
+								Send
+							</Button>
+							<Button variant='info' onClick={()=>verifyOtps}>
+								Verify
+							</Button>
+						</InputGroup.Append>
+					</Form.Control>
+				</Form.Group>
 
-				<Button type='submit' variant='info'>
+				<Button type='submit' variant='info' disabled={isVerifiedOtp}>
 					Register
 				</Button>
 			</Form>

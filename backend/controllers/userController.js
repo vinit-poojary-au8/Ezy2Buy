@@ -59,25 +59,54 @@ const registerUser = asyncHandler(async (req, res) => {
 	}
 })
 
-// //otp
-// nodemailer.createTransport({
-//   host: "mail.YOURDOMAIN.com",
-//     port: 587,
-//     secure: false,
-//   auth: {
-//     user: "YOURUSERNAME",
-//     pass: "YOURPASSWORD"
-//   }
-// });
+//otp
+let transporter = nodemailer.createTransport({
+	host: 'smtp.gmail.com',
+	port: 465,
+	secure: true,
+	service: 'Gmail',
+	auth: {
+		user: process.env.EMAIL,
+		pass: process.env.PASSWORD,
+	},
+})
 
-// // verify connection configuration
-// transporter.verify(function(error, success) {
-//   if (error) {
-//     console.log(error);
-//   } else {
-//     console.log("Server is ready to take our messages");
-//   }
-// });
+// @desc    Verify a new user
+// @route   POST /api/users/senOtp
+// @access  Private
+const sendOtp = asyncHandler(async (res, req) => {
+	const { email } = req.body
+	var mailOptions = {
+		to: email,
+		subject: 'Otp for registration is: ',
+		html:
+			'<h3>OTP for account verification is </h3>' +
+			"<h1 style='font-weight:bold;'>" +
+			otp +
+			'</h1>', // html body
+	}
+
+	transporter.sendMail(mailOptions, (error, info) => {
+		if (error) {
+			return console.log(error)
+		}
+		console.log('Message sent: %s', info.messageId)
+		console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info))
+
+		//res.render('otp');
+	})
+})
+// @desc    Verify a new user
+// @route   POST /api/users/verifyOtp
+// @access  Private
+const verifyUser = asyncHandler(async (res, req) => {
+	const { verifyOtp } = req.body
+	if (verifyOtp === otp) {
+		res.send({msg:'You has been successfully registered',verify:true})
+	} else {
+		res.render('otp', { msg: 'otp is incorrect' })
+	}
+})
 
 // @desc    Get user profile
 // @route   GET /api/users/profile
@@ -197,4 +226,6 @@ export {
 	deleteUser,
 	getUserById,
 	updateUser,
+	verifyUser,
+	sendOtp,
 }
