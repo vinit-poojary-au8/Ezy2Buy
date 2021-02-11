@@ -73,7 +73,7 @@ let transporter = nodemailer.createTransport({
 
 // @desc    Verify a new user
 // @route   POST /api/users/senOtp
-// @access  Private
+// @access  Public
 const sendOtp = asyncHandler(async (res, req) => {
 	const { email } = req.body
 	var mailOptions = {
@@ -98,11 +98,11 @@ const sendOtp = asyncHandler(async (res, req) => {
 })
 // @desc    Verify a new user
 // @route   POST /api/users/verifyOtp
-// @access  Private
+// @access  Public
 const verifyUser = asyncHandler(async (res, req) => {
 	const { verifyOtp } = req.body
 	if (verifyOtp === otp) {
-		res.send({msg:'You has been successfully registered',verify:true})
+		res.send({ msg: 'You has been successfully registered', verify: true })
 	} else {
 		res.render('otp', { msg: 'otp is incorrect' })
 	}
